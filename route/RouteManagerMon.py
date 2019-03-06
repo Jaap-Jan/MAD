@@ -28,6 +28,9 @@ class RouteManagerMon(RouteManagerBase):
                                   )
         self.coords_spawns_known = coords_spawns_known
 
+    def _check_coords_pre_fetching(self, lat, lng):
+        return True
+
     def _retrieve_latest_priority_queue(self):
         return self.db_wrapper.retrieve_next_spawns(self.geofence_helper)
 

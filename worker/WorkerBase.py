@@ -579,7 +579,8 @@ class WorkerBase(ABC):
 
             log.info("_check_pogo_main_screen: Previous checks found popups: %s" % str(found))
             if not found:
-                self._takeScreenshot()
+                time.sleep(2)
+                self._takeScreenshot(delayBefore=self._applicationArgs.post_screenshot_delay)
 
             attempts += 1
         log.info("_check_pogo_main_screen: done")

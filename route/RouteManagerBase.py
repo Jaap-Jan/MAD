@@ -50,6 +50,7 @@ class RouteManagerBase(ABC):
         else:
             self._route = None
         self._current_index_of_route = 0
+        self._last_index_of_route = 0
         self._init_mode_rounds = 0
 
         if self.settings is not None:
@@ -241,6 +242,14 @@ class RouteManagerBase(ABC):
         pass
 
     @abstractmethod
+    def _check_coords_pre_fetching(self, lat, lng):
+        """
+        Pre check coord before getting new one
+        :return:
+        """
+        pass
+
+    @abstractmethod
     def _recalc_route_workertype(self):
         """
         Return a new route for worker
@@ -345,6 +354,15 @@ class RouteManagerBase(ABC):
                 log.info("Moving on with location %s" % self._route[self._current_index_of_route])
                 next_lat = self._route[self._current_index_of_route]['lat']
                 next_lng = self._route[self._current_index_of_route]['lng']
+
+            if self._last_index_of_route > 0:
+
+                last_lat = self._route[self._last_index_of_route]['lat']
+                last_lng = self._route[self._last_index_of_route]['lng']
+                if not self._check_coords_pre_fetching(last_lat, last_lng):
+                    log.info('Last location not processed - retry')
+                    return Location(last_lat, last_lng)
+
             self._current_index_of_route += 1
             if self.init and self._current_index_of_route >= len(self._route):
                 self._init_mode_rounds += 1
@@ -379,7 +397,7 @@ class RouteManagerBase(ABC):
                     next_lat = self._route[self._current_index_of_route]['lat']
                     next_lng = self._route[self._current_index_of_route]['lng']
                     self._manager_mutex.release()
-                    return Location(next_lat, next_lng)
+
                 self._manager_mutex.release()
                 return self.get_next_location()
             self._last_round_prio = False
@@ -387,6 +405,7 @@ class RouteManagerBase(ABC):
                  % (str(self.name), str(next_lat), str(next_lng)))
         self._manager_mutex.release()
         if self._check_coords_before_returning(next_lat, next_lng):
+            self._last_index_of_route = self._current_index_of_route-1
             return Location(next_lat, next_lng)
         else:
             return self.get_next_location()

@@ -295,7 +295,7 @@ class WorkerQuests(MITMBase):
     def _open_pokestop(self):
         to = 0
         data_received = '-'
-        while 'Stop' not in data_received and int(to) < 3:
+        while 'Stop' not in data_received and int(to) < 5:
             self._stop_process_time = time.time()
             self._open_gym(self._delay_add)
             data_received = self._wait_for_data(timestamp=self._stop_process_time, proto_to_wait_for=104, timeout=25)
@@ -311,7 +311,6 @@ class WorkerQuests(MITMBase):
                         self._checkPogoClose()
                     self._turn_map(self._delay_add)
                 if 'Mon' in data_received:
-                    time.sleep(1)
                     log.info('Clicking MON')
                     time.sleep(.5)
                     self._turn_map(self._delay_add)

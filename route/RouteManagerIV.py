@@ -35,6 +35,9 @@ class RouteManagerIV(RouteManagerBase):
         # clustering is of no use for now
         pass
 
+    def _check_coords_pre_fetching(self, lat, lng):
+        return True
+
     def __init__(self, db_wrapper, coords, max_radius, max_coords_within_radius, path_to_include_geofence,
                  path_to_exclude_geofence, routefile, mode=None, init=False,
                  name="unknown", settings=None):

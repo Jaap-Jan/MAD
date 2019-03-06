@@ -27,6 +27,9 @@ class WorkerOCR(WorkerBase):
     def _pre_location_update(self):
         self.__start_speed_weather_check_event.set()
 
+    def _check_coords_pre_fetching(self, lat, lng):
+        return True
+
     def _move_to_location(self):
         routemanager = self._get_currently_valid_routemanager()
         if routemanager is None:

@@ -1,4 +1,5 @@
 import logging
+import time
 from route.RouteManagerBase import RouteManagerBase
 
 log = logging.getLogger(__name__)
@@ -63,4 +64,14 @@ class RouteManagerQuests(RouteManagerBase):
             log.info('Already got this Stop')
             return False
         return True
+
+    def _check_coords_pre_fetching(self, lat, lng):
+        log.info('Checking old coord before getting new')
+        time.sleep(2)
+        check_stop = self.db_wrapper.check_stop_quest(lat, lng)
+        if check_stop:
+            log.info('Stop has a quest')
+            return True
+        return False
+
 

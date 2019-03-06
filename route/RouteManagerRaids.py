@@ -36,6 +36,9 @@ class RouteManagerRaids(RouteManagerBase):
     def _get_coords_post_init(self):
         return self.db_wrapper.gyms_from_db(self.geofence_helper)
 
+    def _check_coords_pre_fetching(self, lat, lng):
+        return True
+
     def _cluster_priority_queue_criteria(self):
         if self.settings is not None:
             return self.settings.get("priority_queue_clustering_timedelta", 600)
